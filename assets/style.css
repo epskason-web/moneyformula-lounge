@@ -539,9 +539,11 @@ footer.site-footer{background:var(--forest-950);color:#a09a8d;padding:56px 0 28p
    =========================================================== */
 
 /* ---------- Illustrated scene artwork ---------- */
-.scene{width:100%;height:100%;display:block;object-fit:cover;
+.scene{width:100%;height:100%;display:block;
   transition:transform .7s var(--ease);transform-origin:center 58%;}
-.scene-frame{position:relative;overflow:hidden;background:var(--sage-50);}
+.scene-frame{position:absolute;inset:0;overflow:hidden;background:var(--sage-50);
+  width:100%;height:100%;}
+.cat-card .scene-frame,.featured-card .scene-frame{position:relative;inset:auto;}
 .product-card .banner{height:170px;padding:0;overflow:hidden;position:relative;background:none;}
 .product-card:hover .scene,.cat-card:hover .scene,.persona-card:hover .scene{transform:scale(1.075);}
 .cat-card .scene-frame{height:104px;border-radius:8px;margin-bottom:14px;}
