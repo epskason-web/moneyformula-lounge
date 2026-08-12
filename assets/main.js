@@ -245,8 +245,54 @@ function initTaxCalculator() {
   recalc();
 }
 
+/* ---------- Motion: scroll reveal + reading progress ---------- */
+function initReveal() {
+  const els = document.querySelectorAll('.reveal');
+  if (!els.length) return;
+  if (!('IntersectionObserver' in window) ||
+      matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    els.forEach(e => e.classList.add('in'));
+    return;
+  }
+  const io = new IntersectionObserver((entries, obs) => {
+    entries.forEach(en => {
+      if (en.isIntersecting) { en.target.classList.add('in'); obs.unobserve(en.target); }
+    });
+  }, { rootMargin: '0px 0px -8% 0px', threshold: 0.06 });
+  els.forEach(e => io.observe(e));
+}
+
+function initReadProgress() {
+  const bar = document.querySelector('.read-progress');
+  const body = document.querySelector('.article-body');
+  if (!bar || !body) return;
+  const update = () => {
+    const start = body.offsetTop, height = body.offsetHeight - innerHeight;
+    const pct = Math.min(100, Math.max(0, ((scrollY - start) / Math.max(height, 1)) * 100));
+    bar.style.width = pct + '%';
+  };
+  addEventListener('scroll', update, { passive: true });
+  addEventListener('resize', update);
+  update();
+}
+
+/* ---------- Insights hub: highlight the category you're reading ---------- */
+function initHubRail() {
+  const links = document.querySelectorAll('.hub-rail a[href^="#cat-"], .hub-mobile-cats a[href^="#cat-"]');
+  const blocks = document.querySelectorAll('.cat-block');
+  if (!links.length || !blocks.length) return;
+  const setOn = id => links.forEach(a => a.classList.toggle('on', a.getAttribute('href') === '#' + id));
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(en => { if (en.isIntersecting) setOn(en.target.id); });
+  }, { rootMargin: '-96px 0px -70% 0px' });
+  blocks.forEach(b => io.observe(b));
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   initMobileNav();
+  initReveal();
+  initReadProgress();
+  initHubRail();
   initToggleGroups();
   initCountdown();
   initWishlist();
